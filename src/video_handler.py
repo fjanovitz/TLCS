@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from sort import Sort
+from src.sort import Sort
 from src.vehicle_detector import detect_vehicles
 from src.counter import VehicleCounter
 from src.traffic_light import TrafficLightDetector
@@ -44,9 +44,11 @@ def process_video(path):
 
         # 2. Detect vehicles
         detections = detect_vehicles(frame)
-        car_detections = [d for d in detections if d[5] == 2]  # class_id 2 = car
+        valid_classes = {2, 3, 5, 7}  # car, motorcycle, bus, truck
+        filtered = [d for d in detections if d[5] in valid_classes]
 
-        dets_np = np.array([[x1, y1, x2, y2, conf] for (x1, y1, x2, y2, conf, cls) in car_detections])
+
+        dets_np = np.array([[x1, y1, x2, y2, conf] for (x1, y1, x2, y2, conf, cls) in filtered])
         if len(dets_np) == 0:
             dets_np = np.empty((0, 5))
 
