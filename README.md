@@ -5,3 +5,8 @@ To install the dependencies, use:
 ```
 pip install -r requirements.txt
 ```
+
+To run the project, use:
+```
+python main.py
+```
