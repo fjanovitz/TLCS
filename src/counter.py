@@ -3,27 +3,16 @@ import cv2
 
 class VehicleCounter:
     def __init__(self, line_start, line_end, direction="vertical"):
-        """
-        Args:
-            line_start: (x, y) start point of the counting line
-            line_end: (x, y) end point of the counting line
-            direction: 'vertical' or 'horizontal' - determines crossing logic
-        """
         self.line_start = line_start
         self.line_end = line_end
         self.direction = direction
         self.counted_ids = set()
         self.vehicle_count = 0
-        self.previous_centroids = {}  # track_id: (x, y)
+        self.previous_centroids = {}
 
     def update(self, tracked_objects, traffic_light_state):
-        """
-        tracked_objects: dict {track_id: (cx, cy)}
-        traffic_light_state: 'green', 'red', or 'unknown'
-        Returns: updated vehicle count
-        """
         if traffic_light_state != "green":
-            return self.vehicle_count  # do not count during red or unknown
+            return self.vehicle_count
 
         for track_id, (cx, cy) in tracked_objects.items():
             if track_id in self.counted_ids:
@@ -42,7 +31,6 @@ class VehicleCounter:
         return self.vehicle_count
 
     def _crossed_line(self, px, py, cx, cy):
-        """Check if the line was crossed based on direction."""
         if self.direction == "vertical":
             line_x = self.line_start[0]
             return (px < line_x and cx >= line_x) or (px > line_x and cx <= line_x)
